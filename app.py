@@ -7,6 +7,8 @@ from datetime import datetime
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
+import gspread
+from google.oauth2.service_account import Credentials
 
 from dotenv import load_dotenv
 from openai import OpenAI
@@ -191,6 +193,32 @@ def normalize_result(result):
         "section_summaries": result.get("section_summaries", []),
         "interpretation": result.get("interpretation", "")
     }
+
+
+def save_feedback_to_google_sheets(feedback: dict):
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
+
+    credentials = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scopes
+    )
+
+    gc = gspread.authorize(credentials)
+
+    sheet = gc.open_by_key(st.secrets["GOOGLE_SHEET_ID"])
+    worksheet = sheet.sheet1
+
+    existing_values = worksheet.get_all_values()
+
+    headers = list(feedback.keys())
+
+    if len(existing_values) == 0:
+        worksheet.append_row(headers)
+
+    worksheet.append_row(list(feedback.values()))
 
 
 # =========================
@@ -898,17 +926,10 @@ with tab3:
                     "comments": comments
                 }
 
-                feedback_df = pd.DataFrame([feedback])
-                file_exists = os.path.exists("feedback_results.csv")
+                try:
+                    save_feedback_to_google_sheets(feedback)
+                    st.success("Feedback saved successfully.")
+                except Exception as e:
+                    st.error(f"Feedback saving failed: {e}")
 
-                feedback_df.to_csv(
-                    "feedback_results.csv",
-                    mode="a",
-                    header=not file_exists,
-                    index=False,
-                    encoding="utf-8"
-                )
-
-                st.success("Feedback saved successfully.")
-
-        st.caption("Feedback is saved privately to feedback_results.csv.")
+        st.caption("Feedback is saved privately to Google Sheets.")
