@@ -863,14 +863,14 @@ with tab3:
             time_without_tool = st.number_input(
                 "How many minutes would this analysis take without this tool?",
                 min_value=0,
-                max_value=300,
+                max_value=800,
                 value=0
             )
 
             time_with_tool = st.number_input(
                 "How many minutes did the analysis take using this tool?",
                 min_value=0,
-                max_value=300,
+                max_value=00,
                 value=0
             )
 
