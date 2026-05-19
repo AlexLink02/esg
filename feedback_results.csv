@@ -1,0 +1,2 @@
+timestamp,participant_id,uploaded_filename,model_1,model_2,time_without_tool_minutes,time_with_tool_minutes,estimated_time_saved_minutes,perceived_quality,usefulness,interpretability,future_use,overall_helpfulness,preferred_model,comments
+2026-05-18 21:40:20,Alex,5.pdf,gpt-4.1-mini,gpt-5-mini,30,5,25,3,3,3,Yes,3,gpt-4.1-mini,
