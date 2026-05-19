@@ -841,40 +841,69 @@ with tab3:
         st.markdown("## User evaluation questionnaire")
 
         with st.form("feedback_form"):
-            participant_id = st.text_input(
-                "Participant ID / name"
+            user_group = st.radio(
+                "Are you a student or an analyst?",
+                ["Student", "Analyst", "Other"]
+            )
+
+            esg_familiarity = st.slider(
+                "How familiar are you with ESG-related articles?",
+                1,
+                5,
+                3
+            )
+
+            ai_familiarity = st.slider(
+                "How familiar are you with AI tools?",
+                1,
+                5,
+                3
             )
 
             time_without_tool = st.number_input(
-                "How many minutes would the analysis take without this tool?",
+                "How many minutes would this analysis take without this tool?",
                 min_value=0,
                 max_value=300,
-                value=30
+                value=0
             )
 
             time_with_tool = st.number_input(
                 "How many minutes did the analysis take using this tool?",
                 min_value=0,
                 max_value=300,
-                value=5
+                value=0
             )
 
-            perceived_quality = st.slider(
-                "The AI outputs were high quality",
+            output_quality = st.slider(
+                "The AI outputs were high quality.",
                 1,
                 5,
                 3
             )
 
             usefulness = st.slider(
-                "The tool was useful for understanding the article",
+                "The tool was useful for understanding the article.",
                 1,
                 5,
                 3
             )
 
             interpretability = st.slider(
-                "The ESG visualization was easy to interpret",
+                "The ESG visualizations were easy to interpret.",
+                1,
+                5,
+                3
+            )
+
+            understanding_improvement = st.slider(
+                "The tool improved my understanding of the article.",
+                1,
+                5,
+                3
+            )
+
+            trust = st.slider(
+                "I would trust this tool to support ESG article analysis.",
                 1,
                 5,
                 3
@@ -883,13 +912,6 @@ with tab3:
             future_use = st.radio(
                 "Would you use this tool in the future?",
                 ["Yes", "No", "Maybe"]
-            )
-
-            overall_helpfulness = st.slider(
-                "Overall, how helpful was this tool?",
-                1,
-                5,
-                3
             )
 
             preferred_model = st.radio(
@@ -901,8 +923,8 @@ with tab3:
                 ]
             )
 
-            comments = st.text_area(
-                "Additional comments"
+            open_comment = st.text_area(
+                "What did you like or dislike about the tool?"
             )
 
             submitted = st.form_submit_button(
@@ -912,18 +934,20 @@ with tab3:
             if submitted:
                 feedback = {
                     "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
-                    "participant_id": participant_id,
                     "uploaded_filename": st.session_state.get("uploaded_filename", ""),
+                    "user_group": user_group,
+                    "esg_familiarity": esg_familiarity,
+                    "ai_familiarity": ai_familiarity,
                     "time_without_tool_minutes": time_without_tool,
                     "time_with_tool_minutes": time_with_tool,
-                    "estimated_time_saved_minutes": time_without_tool - time_with_tool,
-                    "perceived_quality": perceived_quality,
+                    "output_quality": output_quality,
                     "usefulness": usefulness,
                     "interpretability": interpretability,
+                    "understanding_improvement": understanding_improvement,
+                    "trust": trust,
                     "future_use": future_use,
-                    "overall_helpfulness": overall_helpfulness,
                     "preferred_model": preferred_model,
-                    "comments": comments
+                    "open_comment": open_comment
                 }
 
                 try:
