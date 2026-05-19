@@ -5,3 +5,5 @@ pandas
 plotly
 PyPDF2
 reportlab
+gspread
+google-auth
